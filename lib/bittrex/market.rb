@@ -1,5 +1,3 @@
-require 'time'
-
 module Bittrex
   class Market
     include Helpers

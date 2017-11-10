@@ -7,8 +7,8 @@ module Bittrex
     attr_accessor :key, :secret
 
     @@defaults = {
-      key: ENV['bittrex_api_key'],
-      secret: ENV['bittrex_api_secret']
+      key: ENV['BITTREX_API_KEY'],
+      secret: ENV['BITTREX_API_SECRET']
     }
 
     def self.defaults

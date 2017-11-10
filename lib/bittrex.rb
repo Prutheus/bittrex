@@ -1,4 +1,6 @@
 require "bittrex/version"
+# require "dotenv/load"
+require "time"
 
 module Bittrex
   autoload :Helpers,       'bittrex/helpers'
@@ -12,6 +14,8 @@ module Bittrex
   autoload :Summary,       'bittrex/summary'
   autoload :Wallet,        'bittrex/wallet'
   autoload :Withdrawal,    'bittrex/withdrawal'
+
+  class RequestError < StandardError; end
 
   def self.client
     @client ||= Client.new(configuration.auth)

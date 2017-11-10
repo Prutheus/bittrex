@@ -2,7 +2,8 @@ module Bittrex
   class Summary
     include Helpers
 
-    attr_reader :name, :high, :low, :volume, :last, :base_volume, :raw, :created_at
+    attr_reader :name, :high, :low, :volume, :last, :base_volume,
+                :raw, :created_at, :status, :message
 
     alias_method :vol, :volume
     alias_method :base_vol, :base_volume
@@ -13,16 +14,29 @@ module Bittrex
       @low         = attrs['Low']
       @volume      = attrs['Volume']
       @last        = attrs['Last']
-      @base_volume = attrs['BaseVolume']
       @raw         = attrs
+      @prev_day    = attrs['PrevDay']
+      @status      = attrs['status']
+      @message     = attrs['message']
       @created_at  = extract_timestamp(attrs['TimeStamp'])
     end
 
-    def self.all
-      client.get('public/getmarketsummaries').map{|data| new(data) }
+    def self.get(market_name = 'USDT-BTC')
+      @status, message, results = client.get("public/getmarketsummary?market=#{market_name}")
+      if successful?
+        result = results[0]
+        result.merge!("status" => @status, "message" => message)
+        new(result)
+      else
+        fail Bittrex::RequestError, message
+      end
     end
 
     private
+
+    def self.successful?
+      @status
+    end
 
     def self.client
       @client ||= Bittrex.client

@@ -23,6 +23,7 @@ tmp
 *.a
 mkmf.log
 script
+.env
 
 # Ignore application configuration
 /config/application.yml

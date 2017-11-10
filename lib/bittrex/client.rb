@@ -26,11 +26,19 @@ module Bittrex
           req.headers[:apisign] = signature(url, nonce)
         end
       end
-
-      JSON.parse(response.body)['result']
+      prepare_response_object(response)
     end
 
     private
+
+    def prepare_response_object(response)
+      response_body = JSON.parse(response.body)
+      success = response_body['success']
+      message = response_body['message']
+      result = response_body['result']
+
+      [success, message, result]
+    end
 
     def signature(url, nonce)
       OpenSSL::HMAC.hexdigest('sha512', secret, "#{url}?apikey=#{key}&nonce=#{nonce}")
