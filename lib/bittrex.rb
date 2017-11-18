@@ -14,11 +14,18 @@ module Bittrex
   autoload :Summary,       'bittrex/summary'
   autoload :Wallet,        'bittrex/wallet'
   autoload :Withdrawal,    'bittrex/withdrawal'
+  autoload :Candles,       'bittrex/candles'
 
   class RequestError < StandardError; end
 
   def self.client
-    @client ||= Client.new(configuration.auth)
+    params = configuration.auth.merge(api_version: "v1")
+    @client ||= Client.new(params)
+  end
+
+  def self.clientv2
+    params = configuration.auth.merge(api_version: "v2")
+    @clientv2 ||= Client.new(params)
   end
 
   def self.config

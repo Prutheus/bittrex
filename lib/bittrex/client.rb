@@ -4,22 +4,27 @@ require 'json'
 
 module Bittrex
   class Client
-    HOST = 'https://bittrex.com/api/v1.1'
 
-    attr_reader :key, :secret
+    HOST = {
+      "v1" => "https://bittrex.com/api/v1.1",
+      "v2" => "https://bittrex.com/Api/v2.0"
+    }
+
+    attr_reader :key, :secret, :api_version
 
     def initialize(attrs = {})
       @key    = attrs[:key]
       @secret = attrs[:secret]
+      @api_version = attrs[:api_version]
     end
 
     def get(path, params = {}, headers = {})
       nonce = Time.now.to_i
+      host = HOST[api_version]
       response = connection.get do |req|
-        url = "#{HOST}/#{path}"
+        url = "#{host}/#{path}"
         req.params.merge!(params)
         req.url(url)
-
         if key
           req.params[:apikey]   = key
           req.params[:nonce]    = nonce
@@ -45,7 +50,8 @@ module Bittrex
     end
 
     def connection
-      @connection ||= Faraday.new(:url => HOST) do |faraday|
+      host = HOST[api_version]
+      @connection ||= Faraday.new(:url => host) do |faraday|
         faraday.request  :url_encoded
         faraday.adapter  Faraday.default_adapter
       end
