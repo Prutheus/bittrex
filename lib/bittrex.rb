@@ -22,7 +22,7 @@ module Bittrex
 
   def self.client
     params = configuration.auth.merge(api_version: "v1")
-    @client ||= Client.new(params)
+    @client = Client.new(params)
   end
 
   def self.clientv2
