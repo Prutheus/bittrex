@@ -12,21 +12,33 @@ module Bittrex
       @quantity            = attrs['Quantity']
       @rate                = attrs['Rate']
       @order_type          = attrs['OrderType']
-      @status              = attrs['status']
-      @message             = attrs['message']
     end
 
     def self.buy(opts = {})
       opts = default_opts.merge(opts)
       @status, message, results = clientv2.
         credential_get("key/market/TradeBuy", opts)
+      if successful?
+        result = new(results)
+        { status: @status, message: message, result: result }
+      else
+        fail Bittrex::RequestError, message
+      end
+    end
+
+    def self.sell(opts = {})
+      opts = default_opts.merge(opts)
+      @status, message, results = clientv2.
+        credential_get("key/market/TradeSell", opts)
+      if successful?
+        result = new(results)
+        { status: @status, message: message, result: result }
+      else
+        fail Bittrex::RequestError, message
+      end
     end
 
     private
-
-    def self.prepare_results(results)
-      results.map { |r| new(r) }
-    end
 
     def self.default_opts
       { 
