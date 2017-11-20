@@ -46,10 +46,19 @@ module Bittrex
     end
 
     def self.history
-      client.get('account/getorderhistory').map{|data| new(data) }
+      @status, message, results = client.credential_get('account/getorderhistory')
+      if successful?
+        results.map{|data| new(data) }
+      else
+        fail Bittrex::RequestError, message
+      end
     end
 
     private
+
+    def self.successful?
+      @status
+    end
 
     def self.orderbook(market, type, depth)
       client.get('public/getorderbook', {
