@@ -16,6 +16,7 @@ module Bittrex
 
     def self.buy(opts = {})
       opts = default_opts.merge(opts)
+      log.info "Buying #{opts['Quantity']} for #{opts['Rate']}"
       @status, message, results = clientv2.
         credential_get("key/market/TradeBuy", opts)
       if successful?
@@ -28,6 +29,7 @@ module Bittrex
 
     def self.sell(opts = {})
       opts = default_opts.merge(opts)
+      log.info "Selling #{opts['Quantity']} for #{opts['Rate']}"
       @status, message, results = clientv2.
         credential_get("key/market/TradeSell", opts)
       if successful?
@@ -39,6 +41,17 @@ module Bittrex
     end
 
     private
+
+    def log
+      @_log ||= initialize_logger
+    end
+
+    def initialize_logger
+      logger = Logger.new(STDOUT)
+      logger.level = Logger::DEBUG
+      logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+      logger
+    end
 
     def self.default_opts
       { 
