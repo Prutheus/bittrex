@@ -1,5 +1,5 @@
 require "bittrex/version"
-require "dotenv/load"
+# require "dotenv/load"
 require "time"
 require "rest-client"
 
