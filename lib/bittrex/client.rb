@@ -1,8 +1,9 @@
-require 'faraday'
 require 'base64'
 require 'json'
+require 'openssl'
 
 module Bittrex
+
   class Client
 
     HOST = {
@@ -18,23 +19,33 @@ module Bittrex
       @api_version = attrs[:api_version]
     end
 
-    def get(path, params = {}, headers = {})
+    def public_get(path, params = {}, headers = {})
+      url = "#{host}/#{path}"
+      full_url = get_full_url(url: url, params: params)
+      response = RestClient.get(full_url)
+      prepare_response_object(response)
+    end
+  
+    def credential_get(path, params = {}, headers = {})
       nonce = Time.now.to_i
-      host = HOST[api_version]
-      response = connection.get do |req|
-        url = "#{host}/#{path}"
-        req.params.merge!(params)
-        req.url(url)
-        if key
-          req.params[:apikey]   = key
-          req.params[:nonce]    = nonce
-          req.headers[:apisign] = signature(url, nonce)
-        end
-      end
+      url = "#{host}/#{path}"
+      credential = { nonce: nonce, apikey: key }
+      full_url = get_full_url(url: url, credential: credential, params: params)
+      response = RestClient.get(full_url, { apisign: signature(full_url) })
       prepare_response_object(response)
     end
 
     private
+
+    def host
+      HOST[api_version]
+    end
+
+    def get_full_url(url:, params:, credential: {})
+      params.merge!(credential)
+      params_str = params.map { |k, v| "#{k}=#{v}"}.join("&")
+      "#{url}?#{params_str}"
+    end
 
     def prepare_response_object(response)
       response_body = JSON.parse(response.body)
@@ -45,16 +56,8 @@ module Bittrex
       [success, message, result]
     end
 
-    def signature(url, nonce)
-      OpenSSL::HMAC.hexdigest('sha512', secret, "#{url}?apikey=#{key}&nonce=#{nonce}")
-    end
-
-    def connection
-      host = HOST[api_version]
-      @connection ||= Faraday.new(:url => host) do |faraday|
-        faraday.request  :url_encoded
-        faraday.adapter  Faraday.default_adapter
-      end
+    def signature(url)
+      OpenSSL::HMAC.hexdigest('sha512', secret, url)
     end
   end
 end

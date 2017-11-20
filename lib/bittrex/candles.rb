@@ -17,7 +17,7 @@ module Bittrex
 
     def self.get(opts = {})
       opts.merge!(default_opts)
-      @status, message, results = clientv2.get("pub/market/GetTicks", opts)
+      @status, message, results = clientv2.public_get("pub/market/GetTicks", opts)
       if successful?
         prepared_results = prepare_results(results)
         { status: @status, message: message, results: prepared_results }

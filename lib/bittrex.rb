@@ -1,6 +1,7 @@
 require "bittrex/version"
-# require "dotenv/load"
+require "dotenv/load"
 require "time"
+require "rest-client"
 
 module Bittrex
   autoload :Helpers,       'bittrex/helpers'
@@ -15,6 +16,7 @@ module Bittrex
   autoload :Wallet,        'bittrex/wallet'
   autoload :Withdrawal,    'bittrex/withdrawal'
   autoload :Candles,       'bittrex/candles'
+  autoload :Trade,         'bittrex/trade'
 
   class RequestError < StandardError; end
 
