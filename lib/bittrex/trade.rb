@@ -42,14 +42,14 @@ module Bittrex
 
     private
 
-    def log
+    def self.log
       @_log ||= initialize_logger
     end
 
-    def initialize_logger
+    def self.initialize_logger
       logger = Logger.new(STDOUT)
       logger.level = Logger::DEBUG
-      logger.datetime_format = "%Y-%m-%d %H:%M:%S "
+      logger.datetime_format = "%Y-%m-%d %H:%M:%S"
       logger
     end
 
