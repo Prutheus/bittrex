@@ -22,7 +22,7 @@ module Bittrex
     end
 
     def self.get(market_name = 'USDT-BTC')
-      @status, message, results = client.get("public/getmarketsummary?market=#{market_name}")
+      @status, message, results = client.public_get("public/getmarketsummary?market=#{market_name}")
       if successful?
         result = results[0]
         result.merge!("status" => @status, "message" => message)
