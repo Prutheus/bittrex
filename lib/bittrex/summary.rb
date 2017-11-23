@@ -21,8 +21,9 @@ module Bittrex
       @created_at  = extract_timestamp(attrs['TimeStamp'])
     end
 
-    def self.get(market_name = 'USDT-BTC')
-      @status, message, results = client.public_get("public/getmarketsummary?market=#{market_name}")
+    def self.get(market = 'USDT-BTC')
+      opts = { market: market }
+      @status, message, results = client.public_get("public/getmarketsummary", opts)
       if successful?
         result = results[0]
         result.merge!("status" => @status, "message" => message)
