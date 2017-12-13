@@ -22,7 +22,7 @@ module Bittrex
     end
 
     def self.all
-      client.public_get('public/getmarketsummaries').map { |data| new(data) }
+      client.public_get('public/getmarketsummaries')[2].map { |data| new(data) }
     end
 
     def self.get(market = 'USDT-BTC')
