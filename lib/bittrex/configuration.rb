@@ -4,11 +4,12 @@ module Bittrex
   class Configuration
     include Singleton
 
-    attr_accessor :key, :secret
+    attr_accessor :key, :secret, :api_version
 
     @@defaults = {
       key: ENV['BITTREX_API_KEY'],
-      secret: ENV['BITTREX_API_SECRET']
+      secret: ENV['BITTREX_API_SECRET'],
+      api_version: ENV['BITTREX_API_VERSION']
     }
 
     def self.defaults
@@ -22,7 +23,8 @@ module Bittrex
     def auth
       {
         key: key,
-        secret: secret
+        secret: secret,
+        api_version: api_version
       }
     end
 

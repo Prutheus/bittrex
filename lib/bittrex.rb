@@ -1,7 +1,7 @@
-require "bittrex/version"
+require 'bittrex/version'
 # require "dotenv/load"
-require "time"
-require "rest-client"
+require 'time'
+require 'rest-client'
 
 module Bittrex
   autoload :Helpers,       'bittrex/helpers'
@@ -21,12 +21,12 @@ module Bittrex
   class RequestError < StandardError; end
 
   def self.client
-    params = configuration.auth.merge(api_version: "v1")
+    params = configuration.auth.merge(api_version: 'v1')
     @client = Client.new(params)
   end
 
   def self.clientv2
-    params = configuration.auth.merge(api_version: "v2")
+    params = configuration.auth.merge(api_version: 'v2')
     @clientv2 ||= Client.new(params)
   end
 

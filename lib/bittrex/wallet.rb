@@ -14,7 +14,7 @@ module Bittrex
     end
 
     def self.all
-      client.public_get('account/getbalances')[2].map { |data| new(data) }
+      client.credential_get('account/getbalances')[2].map { |data| new(data) }
     end
 
     private
