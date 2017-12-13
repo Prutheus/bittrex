@@ -15,7 +15,7 @@ module Bittrex
 
     def self.buy(opts = {})
       opts = default_opts.merge(opts)
-      log.info "Buying #{opts['Quantity']} for #{opts['Rate']}"
+      # log.info "Buying #{opts['Quantity']} for #{opts['Rate']}"
       @status, message, results = clientv2
                                   .credential_get('key/market/TradeBuy', opts)
       if successful?
@@ -28,7 +28,7 @@ module Bittrex
 
     def self.sell(opts = {})
       opts = default_opts.merge(opts)
-      log.info "Selling #{opts['Quantity']} for #{opts['Rate']}"
+      # log.info "Selling #{opts['Quantity']} for #{opts['Rate']}"
       @status, message, results = clientv2
                                   .credential_get('key/market/TradeSell', opts)
       if successful?
