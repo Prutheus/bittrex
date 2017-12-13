@@ -3,13 +3,11 @@ require 'json'
 require 'openssl'
 
 module Bittrex
-
   class Client
-
     HOST = {
-      "v1" => "https://bittrex.com/api/v1.1",
-      "v2" => "https://bittrex.com/Api/v2.0"
-    }
+      'v1' => 'https://bittrex.com/api/v1.1',
+      'v2' => 'https://bittrex.com/Api/v2.0'
+    }.freeze
 
     attr_reader :key, :secret, :api_version
 
@@ -19,19 +17,19 @@ module Bittrex
       @api_version = attrs[:api_version]
     end
 
-    def public_get(path, params = {}, headers = {})
+    def public_get(path, params = {}, _headers = {})
       url = "#{host}/#{path}"
       full_url = get_full_url(url: url, params: params)
       response = RestClient.get(full_url)
       prepare_response_object(response)
     end
-  
-    def credential_get(path, params = {}, headers = {})
+
+    def credential_get(path, params = {}, _headers = {})
       nonce = Time.now.to_i
       url = "#{host}/#{path}"
       credential = { nonce: nonce, apikey: key }
       full_url = get_full_url(url: url, credential: credential, params: params)
-      response = RestClient.get(full_url, { apisign: signature(full_url) })
+      response = RestClient.get(full_url, apisign: signature(full_url))
       prepare_response_object(response)
     end
 
@@ -43,7 +41,7 @@ module Bittrex
 
     def get_full_url(url:, params:, credential: {})
       params.merge!(credential)
-      params_str = params.map { |k, v| "#{k}=#{v}"}.join("&")
+      params_str = params.map { |k, v| "#{k}=#{v}" }.join('&')
       "#{url}?#{params_str}"
     end
 
