@@ -13,6 +13,7 @@ module Bittrex
       @high        = attrs['High']
       @low         = attrs['Low']
       @volume      = attrs['Volume']
+      @base_volume = attrs['BaseVolume']
       @last        = attrs['Last']
       @raw         = attrs
       @prev_day    = attrs['PrevDay']
