@@ -5,8 +5,8 @@ module Bittrex
     attr_reader :name, :high, :low, :volume, :last, :base_volume,
                 :raw, :created_at, :status, :message
 
-    alias_method :vol, :volume
-    alias_method :base_vol, :base_volume
+    alias vol volume
+    alias base_vol base_volume
 
     def initialize(attrs = {})
       @name        = attrs['MarketName']
@@ -21,15 +21,20 @@ module Bittrex
       @created_at  = extract_timestamp(attrs['TimeStamp'])
     end
 
+    def self.all
+      client.public_get('public/getmarketsummaries').map { |data| new(data) }
+    end
+
     def self.get(market = 'USDT-BTC')
       opts = { market: market }
-      @status, message, results = client.public_get("public/getmarketsummary", opts)
+      @status, message, results = client.public_get('public/getmarketsummary', opts)
       if successful?
         result = results[0]
-        result.merge!("status" => @status, "message" => message)
+        result['status'] = @status
+        result['message'] = message
         new(result)
       else
-        fail Bittrex::RequestError, message
+        raise Bittrex::RequestError, message
       end
     end
 
